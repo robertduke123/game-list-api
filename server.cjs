@@ -96,6 +96,7 @@ app.get('/profile/:id', (req, res) => {
 app.put('/pers', (req, res) => {
     const {id} = req.body
     db(`personal${id}`)
+    .orderBy('id')
     .select('name', 'completion', 'image')
     .then(response => res.json(response))
 })
@@ -201,8 +202,32 @@ app.put('/select', (req, res) => {
     )
 
 
-
     
+    
+})
+
+app.put('/log_delete', (req, res) => {
+    const {id, name} = req.body
+
+    db('users').select('log').where({id: id})
+    .then(data => {
+        let log = data[0].log
+        let index = log.indexOf(name)
+       log.splice(log[index], 1)
+       db('users').select('log').where({id: id})
+        .update({
+            log: log
+        }).returning('log')
+        .then(data => res.json(data))
+    })
+})
+
+app.delete('/pers_delete', (req, res) => {
+    const {id, name} = req.body
+
+    db(`personal${id}`).where({name: name}).del()
+    .select()
+    .then(data => res.json(data))
 })
 
 app.listen(3000, () => {
