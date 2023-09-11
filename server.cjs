@@ -26,13 +26,18 @@ app.get('/', (req,res) => {
 })
 
 app.post('/signin', (req, res) => {
+    const {email, password} = req.body
+
+    if(!email || !password) {
+        res.status(400).json('please fill in info') 
+    } else {
     db.select('email', 'hash').from('login')
-    .where('email', '=', req.body.email)
+    .where('email', '=', email)
     .then(data => {
-        const isValid = bcrypt.compareSync(req.body.password, data[0].hash)
+        const isValid = bcrypt.compareSync(password, data[0].hash)
         if(isValid) {
             return db.select('*').from('users')
-            .where('email', '=', req.body.email)
+            .where('email', '=', email)
             .then(user => {
                 res.json(user[0])
             })
@@ -42,42 +47,47 @@ app.post('/signin', (req, res) => {
         }
     })
     .catch(err =>  res.status(400).json('wrong cridentials'))
+    }
 })
 
 app.post('/register', (req, res) => {
     const {name, email, password} = req.body
     const hash = bcrypt.hashSync(password)
-    db.transaction(trx => {
-        trx.insert({
-            hash: hash,
-            email: email
+    if(!name || !email || !password) {
+        res.status(400).json('please fill in info')
+    } else {
+        db.transaction(trx => {
+            trx.insert({
+                hash: hash,
+                email: email
+            })
+            .into('login')
+            .returning('email')
+            .then(loginEmail => {
+                return trx('users')
+        .returning('*')
+        .insert({
+            email: loginEmail[0].email,
+            name: name,
+            log: []
+        }).then(user => {
+            res.json(user[0])
+            let id = user[0].id
+            db.schema.createTable(`personal${id}`, (table) => {
+            table.increments('id').primary();
+            table.string('user')
+            table.string('name')
+            table.string('completion')
+            table.string('image')
         })
-        .into('login')
-        .returning('email')
-        .then(loginEmail => {
-            return trx('users')
-    .returning('*')
-    .insert({
-        email: loginEmail[0].email,
-        name: name,
-        log: []
-    }).then(user => {
-        res.json(user[0])
-        let id = user[0].id
-        db.schema.createTable(`personal${id}`, (table) => {
-        table.increments('id').primary();
-        table.string('user')
-        table.string('name')
-        table.string('completion')
-        table.string('image')
-    })
-    .then()
+        .then()
+            })
         })
-    })
-    .then(trx.commit)
-    .catch(trx.rollback)
-    })
-    .catch(err => res.status(400).json('unable to register'))
+        .then(trx.commit)
+        .catch(trx.rollback)
+        })
+        .catch(err => res.status(400).json('unable to register'))    
+    }    
 })
 
 app.get('/profile/:id', (req, res) => {
@@ -91,6 +101,20 @@ app.get('/profile/:id', (req, res) => {
         }
     })
     .catch(err => res.status(400).json('error getting user'))
+})
+
+app.put('/search', (req, res) => {
+    const {itemSearch} = req.body
+
+    fetch(`https://rawg-video-games-database.p.rapidapi.com/games/${itemSearch}?key=a8d817fa172443748735ff2d10862681`, {
+          method: 'GET',
+          headers: {
+            'X-RapidAPI-Key': '48bcd47c97msh29aeb9d40c8bed9p1b117bjsn539a69073325',
+            'X-RapidAPI-Host': 'rawg-video-games-database.p.rapidapi.com'            
+            }
+            })
+            .then(response => response.json())            
+            .then(data => res.json(data))
 })
 
 app.put('/pers', (req, res) => {
@@ -207,7 +231,7 @@ app.put('/select', (req, res) => {
 })
 
 app.put('/log_delete', (req, res) => {
-    const {id, name} = req.body
+    const {id, name, select} = req.body
 
     db('users').select('log').where({id: id})
     .then(data => {
@@ -217,8 +241,12 @@ app.put('/log_delete', (req, res) => {
        db('users').select('log').where({id: id})
         .update({
             log: log
-        }).returning('log')
-        .then(data => res.json(data))
+        }).then(() => {
+            db('users').where({id: id})
+            .decrement(`${select}`, 1)
+            .returning(`${select}`)
+            .then(data => res.json(data[0]))
+        })
     })
 })
 
@@ -229,6 +257,15 @@ app.delete('/pers_delete', (req, res) => {
     .select()
     .then(data => res.json(data))
 })
+
+ app.put('/select_delete', (req, res) => {
+    const {id, select} = req.body
+
+    db('users').where({id: id})
+    .increment(`${select}`, 1)
+    .returning(`${select}`)
+    .then(data => res.json(data[0]))
+ })
 
 app.listen(3000, () => {
     console.log('app is running')
