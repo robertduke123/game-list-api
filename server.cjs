@@ -267,6 +267,6 @@ app.delete('/pers_delete', (req, res) => {
     .then(data => res.json(data[0]))
  })
 
-app.listen(3000, () => {
-    console.log('app is running')
+app.listen( process.env.PORT, 3000, () => {
+    console.log(`app is running on ${process.env.PORT}`)
 })
