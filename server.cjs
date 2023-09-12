@@ -4,15 +4,29 @@ const bcrypt = require('bcrypt-nodejs')
 const cors = require('cors')
 const knex = require('knex')
 
+
 const db = knex({
-  client: 'pg',
-  connection: {
-    host: '127.0.0.1',
-    user: 'postgres',
-    password: 'Wiggles123',
-    database: 'game-list'
-  }
-});
+    client: 'pg',
+    connection: {
+        connectionString: 'postgres://game_list_db_user:LEbzRKsZ1HYt8k3nCGdIxS87Qqo2Hwis@dpg-ck02vi95mpss73c7blfg-a.oregon-postgres.render.com/game_list_db',
+        ssl: {rejectUnauthorized: false},
+        host: 'dpg-ck02vi95mpss73c7blfg-a',
+        port: 5432,
+        user: 'game_list_db_user',
+        password: 'LEbzRKsZ1HYt8k3nCGdIxS87Qqo2Hwis',
+        database: 'game_list_db'
+    }
+})
+
+// const db = knex({
+//   client: 'pg',
+//   connection: {
+//     host: '127.0.0.1',
+//     user: 'postgres',
+//     password: 'Wiggles123',
+//     database: 'game-list'
+//   }
+// });
 
 // db.select('*').from('users').then(console.log)
 
