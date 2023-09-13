@@ -3,7 +3,7 @@ const bodyparser = require('body-parser')
 const bcrypt = require('bcrypt-nodejs')
 const cors = require('cors')
 const knex = require('knex')
-const fetch = require('node-fetch')
+// const fetch = require('node-fetch')
 
 
 const db = knex({
