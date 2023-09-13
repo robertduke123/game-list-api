@@ -8,8 +8,8 @@ const knex = require('knex')
 const db = knex({
     client: 'pg',
     connection: {
-        connectionString: 'postgres://game_list_db_user:LEbzRKsZ1HYt8k3nCGdIxS87Qqo2Hwis@dpg-ck02vi95mpss73c7blfg-a.oregon-postgres.render.com/game_list_db',
-        ssl: {rejectUnauthorized: false},
+        // connectionString: 'postgres://game_list_db_user:LEbzRKsZ1HYt8k3nCGdIxS87Qqo2Hwis@dpg-ck02vi95mpss73c7blfg-a.oregon-postgres.render.com/game_list_db',
+        // ssl: {rejectUnauthorized: false},
         host: 'dpg-ck02vi95mpss73c7blfg-a',
         port: 5432,
         user: 'game_list_db_user',
@@ -28,7 +28,7 @@ const db = knex({
 //   }
 // });
 
-// db.select('*').from('users').then(console.log)
+db.select('*').from('users').then(console.log)
 
 const app = express()
 app.use(bodyparser.json())
