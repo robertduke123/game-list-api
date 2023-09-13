@@ -138,7 +138,7 @@ app.put('/search', (req, res) => {
 
     fetch(url, options)
     .then(res => res.json())
-    .then(json => console.log(json))
+    .then(json => res.json(json))
 	.catch(err => console.error('error:' + err));
     
 
