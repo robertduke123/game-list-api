@@ -128,7 +128,10 @@ app.put('/search', (req, res) => {
             }
             })
             .then(response => response.json())            
-            .then(data => res.json(data))
+            .then(data => {
+                res.json(data)
+                console.log(data);
+            })
 })
 
 app.put('/pers', (req, res) => {
