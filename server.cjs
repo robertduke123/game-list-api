@@ -3,7 +3,10 @@ const bodyparser = require('body-parser')
 const bcrypt = require('bcrypt-nodejs')
 const cors = require('cors')
 const knex = require('knex')
-// const fetch = require('node-fetch')
+const fetch = (...args) => 
+    import('node-fetch').then(({default: fetch}) => fetch(...args))
+
+// import express from 'express'
 
 
 const db = knex({
@@ -118,21 +121,39 @@ app.get('/profile/:id', (req, res) => {
     .catch(err => res.status(400).json('error getting user'))
 })
 
+// const API_KEY = 'fdeb3527d9mshd0491bd056688a1p1e8abajsn07db021ba953'
+
 app.put('/search', (req, res) => {
     const {itemSearch} = req.body
 
-    fetch(`https://rawg-video-games-database.p.rapidapi.com/games/${itemSearch}?key=a8d817fa172443748735ff2d10862681`, {
-          method: 'GET',
-          headers: {
-            'X-RapidAPI-Key': '48bcd47c97msh29aeb9d40c8bed9p1b117bjsn539a69073325',
-            'X-RapidAPI-Host': 'rawg-video-games-database.p.rapidapi.com'            
-            }
-            })
-            .then(response => response.json())            
-            .then(data => {
-                res.json(data)
-                console.log(data);
-            })
+    const url = `https://rawg-video-games-database.p.rapidapi.com/games/${itemSearch}?key=a8d817fa172443748735ff2d10862681`
+
+    const options = {
+        method: 'GET',
+        headers: {
+        'X-RapidAPI-Key': '48bcd47c97msh29aeb9d40c8bed9p1b117bjsn539a69073325',
+        'X-RapidAPI-Host': 'rawg-video-games-database.p.rapidapi.com'            
+        }
+    }
+
+    fetch(url, options)
+    .then(res => res.json())
+    .then(json => console.log(json))
+	.catch(err => console.error('error:' + err));
+    
+
+    // fetch(`https://rawg-video-games-database.p.rapidapi.com/games/${itemSearch}?key=a8d817fa172443748735ff2d10862681`, {
+    //       method: 'GET',
+    //       headers: {
+    //         'X-RapidAPI-Key': '48bcd47c97msh29aeb9d40c8bed9p1b117bjsn539a69073325',
+    //         'X-RapidAPI-Host': 'rawg-video-games-database.p.rapidapi.com'            
+    //         }
+    //         })
+    //         .then(response => response.json())            
+    //         .then(data => {
+    //             res.json(data)
+    //             console.log(data);
+    //         })
 })
 
 app.put('/pers', (req, res) => {
