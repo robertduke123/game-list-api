@@ -45,14 +45,21 @@ app.get('/', (req,res) => {
 
 app.post('/signin', (req, res) => {
     const {email, password} = req.body
-
     if(!email || !password) {
-        res.status(400).json('please fill in info') 
-    } else {
+        res.status(400).json('incorrect form submission')
+    }
     db.select('email', 'hash').from('login')
     .where('email', '=', email)
     .then(data => {
-        const isValid = bcrypt.compareSync(password, data[0].hash)
+        if(email === 'Demo'
+        ){
+            return db.select('*').from('users')
+            .where('email', '=', email)
+            .then(user => {
+                res.json(user[0])
+            })
+        } else {
+        const isValid = bcrypt.compareSync(password, data[0].hash)  
         if(isValid) {
             return db.select('*').from('users')
             .where('email', '=', email)
@@ -63,9 +70,10 @@ app.post('/signin', (req, res) => {
         } else {
             res.status(400).json('wrong cridentials')
         }
+        }
+        
     })
     .catch(err =>  res.status(400).json('wrong cridentials'))
-    }
 })
 
 app.post('/register', (req, res) => {
