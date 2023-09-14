@@ -6,7 +6,7 @@ const knex = require('knex')
 const fetch = (...args) => 
     import('node-fetch').then(({default: fetch}) => fetch(...args))
 
-// import express from 'express'
+
 
 
 const db = knex({
@@ -310,6 +310,15 @@ app.delete('/pers_delete', (req, res) => {
 
     db('users').where({id: id})
     .increment(`${select}`, 1)
+    .returning(`${select}`)
+    .then(data => res.json(data[0]))
+ })
+
+  app.put('/select_delete_2', (req, res) => {
+    const {id, select} = req.body
+
+    db('users').where({id: id})
+    .decrement(`${select}`, 1)
     .returning(`${select}`)
     .then(data => res.json(data[0]))
  })
