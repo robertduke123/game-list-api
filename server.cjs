@@ -323,6 +323,14 @@ app.delete('/pers_delete', (req, res) => {
     .then(data => res.json(data[0]))
  })
 
+app.delete('/game_delete_test', (req, res) => {
+    const {id, game} = req.body
+
+    db(`personal${id}`).where({id: game}).del()
+    .select()
+    .then(data => res.json(data))
+})
+
 app.listen(process.env.PORT || 3000, () => {
     console.log(`app is running on ${process.env.PORT}`)
 })
