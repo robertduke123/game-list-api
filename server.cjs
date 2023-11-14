@@ -134,7 +134,7 @@ app.get('/profile/:id', (req, res) => {
 app.put('/search', (req, res) => {
     const {itemSearch} = req.body
 
-    const url = `https://rawg-video-games-database.p.rapidapi.com/games/${itemSearch}?key=a8d817fa172443748735ff2d10862681`
+    const url = `https://rawg-video-games-database.p.rapidapi.com/games/${itemSearch}?key=${process.env.URL_API_KEY}`
 
     const options = {
         method: 'GET',
