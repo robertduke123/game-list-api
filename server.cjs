@@ -1,3 +1,4 @@
+require('dotenv').config()
 const express = require('express')
 const bodyparser = require('body-parser')
 const bcrypt = require('bcrypt-nodejs')
@@ -143,6 +144,8 @@ app.put('/search', (req, res) => {
         'X-RapidAPI-Host': 'rawg-video-games-database.p.rapidapi.com'            
         }
     }
+
+    
 
     fetch(url, options)
     .then(res => res.json())
