@@ -139,7 +139,7 @@ app.put('/search', (req, res) => {
     const options = {
         method: 'GET',
         headers: {
-        'X-RapidAPI-Key': '48bcd47c97msh29aeb9d40c8bed9p1b117bjsn539a69073325',
+        'X-RapidAPI-Key': process.env.X_RAPID_API,
         'X-RapidAPI-Host': 'rawg-video-games-database.p.rapidapi.com'            
         }
     }
