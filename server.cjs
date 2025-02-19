@@ -121,8 +121,6 @@ app.get("/profile/:id", (req, res) => {
 		.catch((err) => res.status(400).json("error getting user"));
 });
 
-// const API_KEY = 'fdeb3527d9mshd0491bd056688a1p1e8abajsn07db021ba953'
-
 app.put("/search", (req, res) => {
 	const { itemSearch } = req.body;
 
