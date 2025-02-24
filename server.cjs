@@ -10,6 +10,8 @@ const fetch = (...args) =>
 const db = knex({
 	client: "pg",
 	connection: {
+		connectionString: process.env.RENDER_DATABASE_URL,
+		ssl: { rejectUnauthorized: false },
 		host: process.env.RENDER_HOST,
 		port: 5432,
 		user: process.env.RENDER_USER,
@@ -17,8 +19,6 @@ const db = knex({
 		database: process.env.RENDER_DATABASE,
 	},
 });
-
-db.select("*").from("users").then(console.log);
 
 const app = express();
 app.use(bodyparser.json());
@@ -342,6 +342,6 @@ app.delete("/game_delete_test", (req, res) => {
 		.then((data) => res.json(data));
 });
 
-app.listen(process.env.PORT || 3000, () => {
-	console.log(`app is running on ${process.env.PORT}`);
+app.listen(3000, () => {
+	console.log(`app is running`);
 });
